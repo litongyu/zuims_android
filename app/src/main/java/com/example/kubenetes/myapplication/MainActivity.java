@@ -83,7 +83,7 @@ public class MainActivity extends BaseActivity {
 
     @Event(value = R.id.button_login, type = View.OnClickListener.class)
     private void login(View view) {
-        String url =   MyUrl.BaseUrl + MyUrl.restaurantPort + "/restaurant/login";
+        String url =   MyUrl.BaseUrl + MyUrl.merchantPort + "/restaurant/login";
         RequestParams params = new RequestParams(url);
         params.setHeader("Content-Type","application/json;charset=UTF-8");
         params.addBodyParameter("account", account.getText().toString());

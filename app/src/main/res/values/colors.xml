@@ -16,4 +16,7 @@
     <color name="text_yellow">#FFC800</color>
     <color name="text_topbar">#694E42</color>
     <color name="div_white">#E5E5E5</color>
+    <color name="divider_color">#ED912F</color>
+
+    <color name="accept_order">#ED912F</color>
 </resources>

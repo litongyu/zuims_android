@@ -1,67 +1,115 @@
 package com.example.kubenetes.myapplication;
 
 import android.os.Bundle;
-import android.widget.TextView;
+import android.support.v4.view.ViewPager;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.xutils.common.Callback;
-import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
-import java.util.ArrayList;
-
-import JavaBeans.CurrentRest;
-import JavaBeans.Order;
-import api.info.MyUrl;
-
 @ContentView(R.layout.activity_manage)
-public class ManageActivity extends BaseActivity {
+public class ManageActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener,
+        ViewPager.OnPageChangeListener, OrderFragment.Listener {
 
-    @ViewInject(R.id.restaurantId)
-    private TextView restaurantId;
+//    @ViewInject(R.id.restaurantId)
+//    private TextView restaurantId;
 
-    private CurrentRest rest;
+    @ViewInject(R.id.vpager)
+    private ViewPager managePager;
+
+    @ViewInject(R.id.manage_tab_bar)
+    private RadioGroup manageBar;
+
+    @ViewInject(R.id.manage_order)
+    private RadioButton manageOrder;
+
+    @ViewInject(R.id.manage_user)
+    private RadioButton manageUser;
+
+    @ViewInject(R.id.manage_three)
+    private RadioButton manageThree;
+
+    @ViewInject(R.id.manage_four)
+    private RadioButton manageFour;
+
+    private MyFragmentPagerAdapter mAdapter;
+
+    public static final int PAGE_ORDER = 0;
+
+    public static final int PAGE_USER = 1;
+
+    public static final int PAGE_THREE = 2;
+
+    public static final int PAGE_FOUR = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        rest =  CurrentRest.getInstance();
-        restaurantId.setText(rest.getRestaurantId() + "");
-        //Toast.makeText(x.app(), rest.getRestaurantId() + "", Toast.LENGTH_LONG).show();
+        //x.view().inject(this);
+        mAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
+        managePager.setAdapter(mAdapter);
+        managePager.setCurrentItem(0);
+        managePager.addOnPageChangeListener(this);
+        managePager.setOffscreenPageLimit(0);
+        manageOrder.setChecked(true);
+        manageBar.setOnCheckedChangeListener(this);
+    }
 
-        String url =   MyUrl.BaseUrl + MyUrl.merchantPort
-                + "/order/infoByrestaurantid";
-        RequestParams params = new RequestParams(url);
-        params.addQueryStringParameter("restaurantId", rest.getRestaurantId() + "");
-        x.http().get(params, new Callback.CommonCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                Gson gson = new Gson();
-                ArrayList<Order> orders = gson.fromJson(result,
-                        new TypeToken<ArrayList<Order>>() {}.getType());
-                Toast.makeText(x.app(), orders.get(0).toString(), Toast.LENGTH_LONG).show();
+    //重写ViewPager.OnPageChangeListener方法
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+        //state的状态有三个，0表示什么都没做，1正在滑动，2滑动完毕
+        if (state == 2) {
+            switch (managePager.getCurrentItem()) {
+                case PAGE_ORDER:
+                    manageOrder.setChecked(true);
+                    break;
+                case PAGE_USER:
+                    manageUser.setChecked(true);
+                    break;
+                case PAGE_THREE:
+                    manageThree.setChecked(true);
+                    break;
+                case PAGE_FOUR:
+                    manageFour.setChecked(true);
+                    break;
             }
+        }
+    }
 
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-                Toast.makeText(x.app(), ex.getMessage(), Toast.LENGTH_LONG).show();
-            }
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        switch (checkedId) {
+            case R.id.manage_order:
+                managePager.setCurrentItem(PAGE_ORDER);
+                break;
+            case R.id.manage_user:
+                managePager.setCurrentItem(PAGE_USER);
+                break;
+            case R.id.manage_three:
+                managePager.setCurrentItem(PAGE_THREE);
+                break;
+            case R.id.manage_four:
+                managePager.setCurrentItem(PAGE_FOUR);
+                break;
+        }
+    }
 
-            @Override
-            public void onCancelled(CancelledException cex) {
-                Toast.makeText(x.app(), "cancelled", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onFinished() {
-
-            }
-        });
+    @Override
+    public String send(String msg) {
+        Toast.makeText(x.app(), msg, Toast.LENGTH_SHORT).show();
+        return "haha";
     }
 }
 
