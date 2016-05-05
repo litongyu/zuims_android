@@ -2,12 +2,16 @@ package com.example.kubenetes.myapplication;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
+
 
 /**
  * Created by Jay on 2015/8/31 0031.
  */
-public class MyFragmentPagerAdapter extends FragmentStatePagerAdapter {
+
+//FragmentStatePagerAdapter有bug,只能变通了,在fragment setUserVisibleHint方法中重新刷新,参见OrderFragment
+
+public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
     private final int PAGER_COUNT = 4;
 

@@ -90,30 +90,30 @@ public class MainActivity extends BaseActivity {
         params.addBodyParameter("password", password.getText().toString());
         params.setAsJsonContent(true);
         x.http().post(params, new Callback.CommonCallback<String>() {
-            @Override
-            public void onSuccess(String result) {
-                Gson gson = new Gson();
-                CurrentRest.setOurInstance(gson.fromJson(result, CurrentRest.class));
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this, ManageActivity.class);
-                startActivity(intent);
-                //Toast.makeText(x.app(), params.get("restaurantId")+"", Toast.LENGTH_LONG).show();
-            }
+        @Override
+        public void onSuccess(String result) {
+            Gson gson = new Gson();
+            CurrentRest.setOurInstance(gson.fromJson(result, CurrentRest.class));
+            Intent intent = new Intent();
+            intent.setClass(MainActivity.this, ManageActivity.class);
+            startActivity(intent);
+            //Toast.makeText(x.app(), params.get("restaurantId")+"", Toast.LENGTH_LONG).show();
+        }
 
-            @Override
-            public void onError(Throwable ex, boolean isOnCallback) {
-                Toast.makeText(x.app(), ex.getMessage(), Toast.LENGTH_LONG).show();
-            }
+        @Override
+        public void onError(Throwable ex, boolean isOnCallback) {
+            Toast.makeText(x.app(), "登录失败,请检查网络", Toast.LENGTH_LONG).show();
+        }
 
-            @Override
-            public void onCancelled(CancelledException cex) {
-                Toast.makeText(x.app(), "cancelled", Toast.LENGTH_LONG).show();
-            }
+        @Override
+        public void onCancelled(CancelledException cex) {
+            Toast.makeText(x.app(), "cancelled", Toast.LENGTH_LONG).show();
+        }
 
-            @Override
-            public void onFinished() {
+        @Override
+        public void onFinished() {
 
-            }
-        });
-    }
+        }
+    });
+}
 }

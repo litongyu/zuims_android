@@ -18,5 +18,12 @@
     <color name="div_white">#E5E5E5</color>
     <color name="divider_color">#ED912F</color>
 
-    <color name="accept_order">#ED912F</color>
+    <color name="accept_order">#7AB342</color>
+    <color name="reject_order">#CF453F</color>
+    <color name="eat_order">#E5E5E5</color>
+    <!--<color name="finish_order">#8BD569</color>-->
+    <color name="finish_order">#ED912F</color>
+
+    <color name="dialog_divider">#FF909090</color>
+    <color name="dialog_cancel">#C1CDC1</color>
 </resources>

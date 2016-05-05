@@ -1,199 +1,308 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="8dp">
-    <TableRow
-        android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TableLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
-        <TextView
+        android:padding="8dp"
+        android:id="@+id/tableLayout">
+        <TableRow
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="@string/dialog_order_number"/>
+            <TextView
+                android:id="@+id/dialog_order_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="@string/dialog_order_user"/>
+            <TextView
+                android:id="@+id/dialog_order_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+        </TableRow>
+
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="@string/dialog_order_userVipLevel"/>
+            <TextView
+                android:id="@+id/dialog_order_userVipLevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="@string/dialog_order_phoneId"/>
+            <TextView
+                android:id="@+id/dialog_order_phoneId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="@string/dialog_order_dinnerNum"/>
+            <TextView
+                android:id="@+id/dialog_order_dinnerNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="@string/dialog_order_orderTime"/>
+            <TextView
+                android:id="@+id/dialog_order_orderTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="@string/dialog_order_orderSum"/>
+            <TextView
+                android:id="@+id/dialog_order_orderSum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:text="@string/dialog_order_state"/>
+            <TextView
+                android:id="@+id/dialog_order_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="18sp"
+                android:layout_gravity="center_vertical"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
+        </TableRow>
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
-            android:text="@string/dialog_order_number"/>
-        <TextView
-            android:id="@+id/dialog_order_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp" />
-    </TableRow>
+            >
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dip"
+            android:background="@color/divider_color" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dip"
+            android:background="@color/divider_color" />
+        </TableRow>
+    </TableLayout>
 
-    <TableRow
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:text="@string/dialog_order_user"/>
-        <TextView
-            android:id="@+id/dialog_order_user"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp" />
-    </TableRow>
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:id="@+id/dialog_order_linear_wait_confirm"
+        android:visibility="visible"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_below="@+id/tableLayout">
 
-    <TableRow
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
-        <TextView
+        <info.hoang8f.widget.FButton
+            android:id="@+id/dialog_order_accept"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:text="@string/dialog_order_userVipLevel"/>
-        <TextView
-            android:id="@+id/dialog_order_userVipLevel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp" />
-    </TableRow>
+            android:text="接受"
+            android:textSize="15sp"
+            android:textColor="@android:color/black"
+            android:layout_alignParentRight="true"
+            fbutton:buttonColor="@color/accept_order"
+            fbutton:shadowEnabled="false"
+            fbutton:cornerRadius="4dp"
+            android:focusable="false"
+            android:layout_weight="2"
+            android:visibility="gone"/>
 
-    <TableRow
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
         <TextView
+            android:id="@+id/dialog_vacant_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:text="@string/dialog_order_createTime"/>
-        <TextView
-            android:id="@+id/dialog_order_createTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp" />
-    </TableRow>
+            android:textSize="15sp"
+            android:text="    "
+            android:visibility="gone"/>
 
-    <TableRow
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
-        <TextView
+        <info.hoang8f.widget.FButton
+            android:id="@+id/dialog_order_reject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:text="@string/dialog_order_dinnerNum"/>
-        <TextView
-            android:id="@+id/dialog_order_dinnerNum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp" />
-    </TableRow>
+            android:text="拒绝"
+            android:textSize="15sp"
+            android:textColor="@android:color/black"
+            android:layout_alignParentRight="true"
+            fbutton:buttonColor="@color/reject_order"
+            fbutton:shadowEnabled="false"
+            fbutton:cornerRadius="4dp"
+            android:focusable="false"
+            android:layout_weight="2"
+            android:visibility="gone"/>
 
-    <TableRow
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
-        <TextView
+        <info.hoang8f.widget.FButton
+            android:id="@+id/dialog_order_finish"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:text="@string/dialog_order_orderTime"/>
-        <TextView
-            android:id="@+id/dialog_order_orderTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp" />
-    </TableRow>
+            android:text="完成订单"
+            android:textSize="15sp"
+            android:textColor="@android:color/black"
+            android:layout_alignParentRight="true"
+            fbutton:buttonColor="@color/finish_order"
+            fbutton:shadowEnabled="false"
+            fbutton:cornerRadius="4dp"
+            android:focusable="false"
+            android:layout_weight="2"
+            android:visibility="gone"/>
 
-    <TableRow
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
         <TextView
+            android:id="@+id/dialog_vacant_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:text="@string/dialog_order_orderSum"/>
-        <TextView
-            android:id="@+id/dialog_order_orderSum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp" />
-    </TableRow>
+            android:textSize="15sp"
+            android:text="    "
+            android:visibility="gone"/>
 
-    <TableRow
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        >
-        <TextView
+        <info.hoang8f.widget.FButton
+            android:id="@+id/dialog_return"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:text="@string/dialog_order_state"/>
-        <TextView
-            android:id="@+id/dialog_order_state"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:textSize="18sp"
-            android:layout_gravity="center_vertical"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp" />
-    </TableRow>
+            android:text="返回"
+            android:textSize="15sp"
+            android:textColor="@android:color/black"
+            android:layout_alignParentRight="true"
+            fbutton:buttonColor="@color/dialog_cancel"
+            fbutton:shadowEnabled="false"
+            fbutton:cornerRadius="4dp"
+            android:focusable="false"
+            android:layout_weight="2"/>
 
-
-</TableLayout>
+    </LinearLayout>
+</RelativeLayout>
