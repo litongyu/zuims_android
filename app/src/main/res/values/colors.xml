@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#de740a</color>
-    <color name="colorPrimaryDark">#E65F05</color>
+    <!--<color name="colorPrimaryDark">#E65F05</color>-->
     <color name="colorAccent">#000000</color>
     <color name="colorOrange">#de740a</color>
 
@@ -26,4 +26,6 @@
 
     <color name="dialog_divider">#FF909090</color>
     <color name="dialog_cancel">#C1CDC1</color>
+
+    <color name="edit_solid">#E5E5E5</color>
 </resources>

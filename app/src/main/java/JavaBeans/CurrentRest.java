@@ -21,6 +21,8 @@ public class CurrentRest {
     }
 
     private CurrentRest() {
+        restaurantId = null;
+        whetherInfoComplete = null;
     }
 
     public Integer getRestaurantId() {

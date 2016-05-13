@@ -6,7 +6,6 @@
     tools:context="com.example.kubenetes.myapplication.ManageActivity"
     android:gravity="top">
 
-
     <RadioGroup
         android:id="@+id/manage_tab_bar"
         android:layout_width="match_parent"

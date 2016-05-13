@@ -31,17 +31,6 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
         return PAGER_COUNT;
     }
 
-//    @Override
-//    public Object instantiateItem(ViewGroup vg, int position) {
-//        return super.instantiateItem(vg, position);
-//    }
-//
-//    @Override
-//    public void destroyItem(ViewGroup container, int position, Object object) {
-//        System.out.println("position Destory" + position);
-//        super.destroyItem(container, position, object);
-//    }
-
     @Override
     public Fragment getItem(int position) {
 

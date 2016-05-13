@@ -6,9 +6,12 @@ package com.example.kubenetes.myapplication;
 
 import android.app.Application;
 
+import com.avos.avoscloud.AVOSCloud;
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 
 import org.xutils.x;
+
+import api.info.MyUrl;
 
 public class MainApplication extends Application{
     @Override
@@ -17,7 +20,7 @@ public class MainApplication extends Application{
         x.Ext.init(this);
         //开启debug或影响性能
         //x.Ext.setDebug(BuildConfig.DEBUG);
-
+        AVOSCloud.initialize(this, MyUrl.socketId, MyUrl.socketKey);
         //android bootstrap init
         TypefaceProvider.registerDefaultIconSets();
     }

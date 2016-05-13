@@ -171,6 +171,12 @@ public class Order {
         this.userVipLevel = userVipLevel;
     }
 
+    public String getSearchString(){
+        return "" + orderId + phoneId + orderTime + state + createTime + dinerNum
+                + more + handleType + dorderSum + restaurantName + userLastName + userFirstName
+                + userEmail + (gender==1?"男":"女") + userVipLevel;
+    }
+
     @Override
     public String toString(){
         Gson gson = new Gson();

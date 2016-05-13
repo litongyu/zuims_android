@@ -2,6 +2,7 @@ package com.example.kubenetes.myapplication;
 
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -35,6 +36,8 @@ public class ManageActivity extends BaseActivity implements RadioGroup.OnChecked
     @ViewInject(R.id.manage_four)
     private RadioButton manageFour;
 
+    private ActionBar actionBar;
+
     private MyFragmentPagerAdapter mAdapter;
 
     public static final int PAGE_ORDER = 0;
@@ -53,10 +56,17 @@ public class ManageActivity extends BaseActivity implements RadioGroup.OnChecked
         managePager.setAdapter(mAdapter);
         managePager.setCurrentItem(0);
         managePager.addOnPageChangeListener(this);
-        managePager.setOffscreenPageLimit(0);
+        managePager.setOffscreenPageLimit(3);
         manageOrder.setChecked(true);
         manageBar.setOnCheckedChangeListener(this);
+        actionBar = getSupportActionBar();
+        actionBar.setTitle("最美食");
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setLogo(R.drawable.logo);
+        actionBar.setSubtitle("李桐宇的餐厅");
     }
+
 
     //重写ViewPager.OnPageChangeListener方法
     @Override

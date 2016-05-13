@@ -20,6 +20,10 @@ public class MyUrl {
 //
 //    public static final String restaurantPort = "8004";
 
+//    public static final String socketId = "6HR0iwp5ALyvLRHtq70BhYy8-gzGzoHsz";
+//
+//    public static final String socketKey = "HmiHqJ9dJ3O26BP5V175HdG8";
+
     //test server
 
     public static final String BaseUrl = "http://202.120.40.175:";
@@ -31,5 +35,9 @@ public class MyUrl {
     public static final String managePort = "21108";
 
     public static final String restaurantPort = "21100";
+
+    public static final String socketId = "8d3bm5jtWzUowvOw2GJLqUxI-gzGzoHsz";
+
+    public static final String socketKey = "4dTvIzaFOoHU6Xatd7rDIrvw";
 
 }

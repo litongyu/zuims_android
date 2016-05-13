@@ -1,20 +1,35 @@
 package com.example.kubenetes.myapplication;
 
 
+import android.app.ActionBar;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.avos.avoscloud.AVOSCloud;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONObject;
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.ContentView;
@@ -22,6 +37,7 @@ import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -36,11 +52,22 @@ import me.drakeet.materialdialog.MaterialDialog;
  * A simple {@link Fragment} subclass.
  */
 @ContentView(R.layout.fragment_order)
-public class  OrderFragment extends BaseFragment implements AdapterView.OnItemClickListener{
+public class OrderFragment extends BaseFragment implements AdapterView.OnItemClickListener{
 
     private LinkedList<Order> orderList = null;
 
-    private OrderListAdapter orderListAdapter = null;
+    private static OrderListAdapter orderListAdapter = null;
+
+    private static boolean visible = false;
+
+    private static Integer notifyCount = 0;
+
+    private static Integer mNotificationId = 10087;
+
+
+    private int scrollPosition = 0;
+
+    private int topOffset = 0;
 
     private Context context;
 
@@ -51,14 +78,23 @@ public class  OrderFragment extends BaseFragment implements AdapterView.OnItemCl
     @ViewInject(R.id.order_list)
     private ListView orderListView;
 
+    @ViewInject(R.id.order_search)
+    private EditText orderSearch;
+
+    private SearchListener searchListener;
+
+    private static ArrayList<String> keyWords = new ArrayList<>();
+
     private MaterialDialog mMaterialDialog;
+
+    private ActionBar actionBar;
 
     public OrderFragment() {
         // Required empty public constructor
     }
 
 
-    public interface Listener{
+    public interface Listener {
         String send(String msg);
     }
 
@@ -68,21 +104,31 @@ public class  OrderFragment extends BaseFragment implements AdapterView.OnItemCl
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        searchListener = new SearchListener();
         orderListView.setOnItemClickListener(this);
+        orderSearch.addTextChangedListener(this.searchListener);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         Log.i("fragment visible", isVisibleToUser + "");
+        if(orderSearch != null){
+            orderSearch.setText("");
+        }
+        keyWords.clear();
         if (isVisibleToUser) {
+            visible = true;
+            notifyCount = 0;
+            NotificationManager mNotifyMgr = (NotificationManager)x.app().getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotifyMgr.cancel(mNotificationId);
             context = getActivity();
-            if(orderListAdapter == null) {
+            if (orderListAdapter == null) {
                 orderListAdapter = new OrderListAdapter();
             }
             orderListAdapter.setContext(context);
-            rest =  CurrentRest.getInstance();
-            String url =   MyUrl.BaseUrl + MyUrl.merchantPort
+            rest = CurrentRest.getInstance();
+            String url = MyUrl.BaseUrl + MyUrl.merchantPort
                     + "/order/infoByrestaurantid";
             RequestParams params = new RequestParams(url);
             params.addQueryStringParameter("restaurantId", rest.getRestaurantId() + "");
@@ -96,8 +142,12 @@ public class  OrderFragment extends BaseFragment implements AdapterView.OnItemCl
                             }.getType());
                     Collections.reverse(orders);
                     orderList = new LinkedList<Order>(orders);
+                    orderListAdapter.setAllOrder(orderList);
                     orderListAdapter.setOrderList(orderList);
                     orderListView.setAdapter(orderListAdapter);
+
+                    //恢复滑动位置
+                    orderListView.setSelectionFromTop(scrollPosition, topOffset);
 
                     //Toast.makeText(x.app(), orderList.size()+"", Toast.LENGTH_LONG).show();
                 }
@@ -117,8 +167,15 @@ public class  OrderFragment extends BaseFragment implements AdapterView.OnItemCl
 
                 }
             });
-        }else{
+        } else {
             // fragment is no longer visible
+            visible = false;
+            if(orderList != null){
+                //记住滑动位置
+                scrollPosition = orderListView.getFirstVisiblePosition();
+                View v = orderListView.getChildAt(0);
+                topOffset = (v == null) ? 0 : v.getTop();
+            }
         }
     }
 
@@ -135,11 +192,22 @@ public class  OrderFragment extends BaseFragment implements AdapterView.OnItemCl
         holder.dialog_order_number.setText(temp.getOrderId().toString());
 
         holder.dialog_order_user.setText(temp.getUserLastName() + temp.getUserFirstName() +
-                " " + (temp.getGender()==1?"先生":"女士"));
+                " " + (temp.getGender() == 1 ? "先生" : "女士"));
 
         holder.dialog_order_userVipLevel.setText(temp.getUserVipLevel());
 
         holder.dialog_order_phoneId.setText(temp.getPhoneId());
+
+        final String phoneId = temp.getPhoneId();
+        holder.dialog_order_phoneId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:" + phoneId));
+                startActivity(intent);
+            }
+        });
 
         holder.dialog_order_dinnerNum.setText(temp.getDinerNum() + "");
 
@@ -149,7 +217,7 @@ public class  OrderFragment extends BaseFragment implements AdapterView.OnItemCl
 
         holder.dialog_order_state.setText(temp.getState());
 
-        if(temp.getState().equals("待确认")){
+        if (temp.getState().equals("待确认")) {
             holder.dialog_order_accept.setVisibility(View.VISIBLE);
             holder.dialog_vacant_1.setVisibility(View.VISIBLE);
             holder.dialog_order_reject.setVisibility(View.VISIBLE);
@@ -157,14 +225,16 @@ public class  OrderFragment extends BaseFragment implements AdapterView.OnItemCl
             holder.dialog_order_accept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String url =   MyUrl.BaseUrl + MyUrl.merchantPort + "/order/confirmOrder";
+                    String url = MyUrl.BaseUrl + MyUrl.merchantPort + "/order/confirmOrder";
                     RequestParams params = new RequestParams(url);
-                    params.addQueryStringParameter("orderId", orderListAdapter.getOrderList().get(position).getOrderId()+"");
+                    params.addQueryStringParameter("orderId", orderListAdapter.getOrderList().get(position).getOrderId() + "");
                     params.addQueryStringParameter("opt", 1 + "");
                     x.http().get(params, new Callback.CommonCallback<String>() {
                         @Override
                         public void onSuccess(String result) {
-                            orderListAdapter.getOrderList().get(position).setState("已订座");
+                            Gson gson = new Gson();
+                            Order returnOrder = gson.fromJson(result, Order.class);
+                            orderListAdapter.getOrderList().get(position).setState(returnOrder.getState());
                             orderListAdapter.notifyDataSetChanged();
                             mMaterialDialog.dismiss();
                             Toast.makeText(x.app(), "订单接受成功", Toast.LENGTH_SHORT).show();
@@ -190,14 +260,16 @@ public class  OrderFragment extends BaseFragment implements AdapterView.OnItemCl
             holder.dialog_order_reject.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String url =   MyUrl.BaseUrl + MyUrl.merchantPort + "/order/confirmOrder";
+                    String url = MyUrl.BaseUrl + MyUrl.merchantPort + "/order/confirmOrder";
                     RequestParams params = new RequestParams(url);
-                    params.addQueryStringParameter("orderId", orderListAdapter.getOrderList().get(position).getOrderId()+"");
+                    params.addQueryStringParameter("orderId", orderListAdapter.getOrderList().get(position).getOrderId() + "");
                     params.addQueryStringParameter("opt", 0 + "");
                     x.http().get(params, new Callback.CommonCallback<String>() {
                         @Override
                         public void onSuccess(String result) {
-                            orderListAdapter.getOrderList().get(position).setState("已拒绝");
+                            Gson gson = new Gson();
+                            Order returnOrder = gson.fromJson(result, Order.class);
+                            orderListAdapter.getOrderList().get(position).setState(returnOrder.getState());
                             orderListAdapter.notifyDataSetChanged();
                             mMaterialDialog.dismiss();
                             Toast.makeText(x.app(), "订单已拒绝", Toast.LENGTH_SHORT).show();
@@ -223,19 +295,21 @@ public class  OrderFragment extends BaseFragment implements AdapterView.OnItemCl
 
         } //end if 待确认
 
-        if(temp.getState().equals("已订座")){
+        if (temp.getState().equals("已订座")) {
             holder.dialog_order_finish.setVisibility(View.VISIBLE);
             holder.dialog_vacant_2.setVisibility(View.VISIBLE);
             holder.dialog_order_finish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String url =   MyUrl.BaseUrl + MyUrl.merchantPort + "/order/finishOrder";
+                    String url = MyUrl.BaseUrl + MyUrl.merchantPort + "/order/finishOrder";
                     RequestParams params = new RequestParams(url);
-                    params.addQueryStringParameter("orderId", orderListAdapter.getOrderList().get(position).getOrderId()+"");
+                    params.addQueryStringParameter("orderId", orderListAdapter.getOrderList().get(position).getOrderId() + "");
                     x.http().get(params, new Callback.CommonCallback<String>() {
                         @Override
                         public void onSuccess(String result) {
-                            orderListAdapter.getOrderList().get(position).setState("已就餐");
+                            Gson gson = new Gson();
+                            Order returnOrder = gson.fromJson(result, Order.class);
+                            orderListAdapter.getOrderList().get(position).setState(returnOrder.getState());
                             orderListAdapter.notifyDataSetChanged();
                             mMaterialDialog.dismiss();
                             Toast.makeText(x.app(), "订单已完成", Toast.LENGTH_SHORT).show();
@@ -274,6 +348,27 @@ public class  OrderFragment extends BaseFragment implements AdapterView.OnItemCl
         //mMaterialDialog.setTitle("提示");
 
         //mMaterialDialog.setMessage("你好，世界~");
+    }//end item onclick
+
+    private class SearchListener implements TextWatcher{
+        @Override
+        public void afterTextChanged(Editable arg0) {
+            String temp = orderSearch.getText().toString();
+            keyWords.clear();
+            keyWords.addAll(Arrays.asList(temp.split(" ")));
+            orderListAdapter.filter(keyWords);
+            Log.i("searchView", "kk".contains("")+"");
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence arg0, int arg1,
+                                      int arg2, int arg3) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence arg0, int arg1, int arg2,
+                                  int arg3) {
+        }
     }
 
     private class ViewHolder {
@@ -320,12 +415,66 @@ public class  OrderFragment extends BaseFragment implements AdapterView.OnItemCl
         @ViewInject(R.id.dialog_return)
         FButton dialog_return;
 
-        public ViewHolder(){
+        public ViewHolder() {
 
         }
 
-        public ViewHolder(View view){
+        public ViewHolder(View view) {
             x.view().inject(this, view);
+        }
+    }
+
+    //消息推送
+    public static class CustomReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("orders")) {
+                try {
+                    JSONObject json = new JSONObject(intent.getExtras().getString("com.avos.avoscloud.Data"));
+                    String orderStr = json.getString("order");
+                    Gson gson = new Gson();
+                    Order newOrder = gson.fromJson(orderStr, Order.class);
+                    String message = "[新订单]" + "订单号:" + newOrder.getOrderId();
+                    Log.i("avpush", "receive oreder: " + orderStr);
+                    if(!visible){
+                        notifyCount++;
+                        if(notifyCount > 1){
+                            message = "[新订单]" + notifyCount + "个新订单";
+                        }
+                        Intent resultIntent = new Intent(AVOSCloud.applicationContext, MainActivity.class);
+                        PendingIntent pendingIntent =
+                                PendingIntent.getActivity(AVOSCloud.applicationContext, 0, resultIntent,
+                                        PendingIntent.FLAG_CANCEL_CURRENT);
+                        Bitmap LargeBitmap = BitmapFactory.decodeResource(AVOSCloud.applicationContext.getResources(), R.drawable.notification);
+                        NotificationCompat.Builder mBuilder =
+                                new NotificationCompat.Builder(AVOSCloud.applicationContext)
+                                        .setLargeIcon(LargeBitmap)
+                                        .setSmallIcon(R.drawable.notification)
+                                        .setContentTitle(AVOSCloud.applicationContext.getResources().getString(R.string.app_name))
+                                        .setContentText(message)
+                                        .setTicker(message)
+                                        .setWhen(System.currentTimeMillis())
+                                        .setAutoCancel(true)
+                                        .setContentIntent(pendingIntent)
+                                        .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE);
+
+
+                        NotificationManager mNotifyMgr =
+                                (NotificationManager) AVOSCloud.applicationContext
+                                        .getSystemService(
+                                                Context.NOTIFICATION_SERVICE);
+                        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+                    }
+                    else if(orderListAdapter != null){
+                        orderListAdapter.getAllOrder().add(0, newOrder);
+                        orderListAdapter.filter(keyWords);
+                    }
+                }
+                catch (Exception e){
+                    Log.i("avError", e.getMessage());
+                }
+            }
         }
     }
 }

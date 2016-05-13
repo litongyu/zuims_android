@@ -1,6 +1,7 @@
 package com.example.kubenetes.myapplication;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,11 +9,14 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import org.xutils.common.Callback;
 import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import JavaBeans.Order;
@@ -25,6 +29,8 @@ public class OrderListAdapter extends BaseAdapter {
 
     private LinkedList<Order> orderList = new LinkedList<Order>();
 
+    private LinkedList<Order> allOrder = new LinkedList<Order>();
+
     private Context context;
 
     private LayoutInflater inflater;
@@ -33,6 +39,7 @@ public class OrderListAdapter extends BaseAdapter {
     }
 
     public OrderListAdapter(LinkedList<Order> orderList, Context context) {
+        this.orderList.clear();
         this.orderList.addAll(orderList);
         this.context = context;
         inflater = LayoutInflater.from(context);
@@ -43,7 +50,17 @@ public class OrderListAdapter extends BaseAdapter {
     }
 
     public void setOrderList(LinkedList<Order> orderList) {
+        this.orderList.clear();
         this.orderList.addAll(orderList);
+    }
+
+    public LinkedList<Order> getAllOrder() {
+        return allOrder;
+    }
+
+    public void setAllOrder(LinkedList<Order> allOrder) {
+        this.allOrder.clear();
+        this.allOrder.addAll(allOrder);
     }
 
     public Context getContext() {
@@ -100,13 +117,17 @@ public class OrderListAdapter extends BaseAdapter {
             holder.handle_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //完成订单
                     String url =  MyUrl.BaseUrl + MyUrl.merchantPort + "/order/finishOrder";
                     RequestParams params = new RequestParams(url);
                     params.addQueryStringParameter("orderId", orderList.get(position).getOrderId()+"");
                     x.http().get(params, new Callback.CommonCallback<String>() {
                         @Override
                         public void onSuccess(String result) {
-                            orderList.get(position).setState("已就餐");
+                            Gson gson = new Gson();
+                            Order returnOrder = gson.fromJson(result, Order.class);
+                            orderList.get(position).setState(returnOrder.getState());
+                            Log.i("complish order", result);
                             notifyDataSetChanged();
                             Toast.makeText(x.app(), "订单已完成", Toast.LENGTH_SHORT).show();
                         }
@@ -135,6 +156,7 @@ public class OrderListAdapter extends BaseAdapter {
             holder.handle_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //接受订单
                     String url =   MyUrl.BaseUrl + MyUrl.merchantPort + "/order/confirmOrder";
                     RequestParams params = new RequestParams(url);
                     params.addQueryStringParameter("orderId", orderList.get(position).getOrderId()+"");
@@ -142,7 +164,9 @@ public class OrderListAdapter extends BaseAdapter {
                     x.http().get(params, new Callback.CommonCallback<String>() {
                         @Override
                         public void onSuccess(String result) {
-                            orderList.get(position).setState("已订座");
+                            Gson gson = new Gson();
+                            Order returnOrder = gson.fromJson(result, Order.class);
+                            orderList.get(position).setState(returnOrder.getState());
                             notifyDataSetChanged();
                             Toast.makeText(x.app(), "订单接受成功", Toast.LENGTH_SHORT).show();
                         }
@@ -167,6 +191,30 @@ public class OrderListAdapter extends BaseAdapter {
         }
 
         return convertView;
+    }
+
+    public void filter(ArrayList<String> keyWords){
+        if(keyWords == null || keyWords.size() == 0){
+            this.orderList.clear();
+            this.orderList.addAll(this.allOrder);
+            notifyDataSetChanged();
+            return;
+        }
+        this.orderList.clear();
+        //是否包含所有的字符串
+        for(int i = this.allOrder.size() - 1; i >= 0; i--){
+            boolean flag = true;
+            for(int j = 0; j < keyWords.size(); j++) {
+                if (!this.allOrder.get(i).getSearchString().contains(keyWords.get(j))) {
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag) {
+                this.orderList.add(0, this.allOrder.get(i));
+            }
+        }
+        notifyDataSetChanged();
     }
 
     private class ViewHolder {
