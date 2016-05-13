@@ -13,7 +13,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
-    private final int PAGER_COUNT = 4;
+    private final int PAGER_COUNT = 2;
 
     //private ArrayList<BaseFragment> fragmentArrayList = null;
 
@@ -37,15 +37,9 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
         if(position == 0){
             return new OrderFragment();
         }
-        if(position == 1){
+        else {
             return new UserFragment();
         }
-        if(position == 2){
-            return new ThreeFragment();
-        }
-
-        return new FourFragment();
-
     }
 
 

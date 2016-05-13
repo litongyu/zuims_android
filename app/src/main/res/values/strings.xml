@@ -3,8 +3,8 @@
     <string name="action_settings">设置</string>
     <string name="login">登录</string>
 
-    <string name="tab_menu_alert">订单</string>
-    <string name="tab_menu_profile">信息</string>
+    <string name="tab_menu_order">所有订单</string>
+    <string name="tab_menu_todayOrder">今日就餐</string>
     <string name="tab_menu_pay">我的</string>
     <string name="tab_menu_setting">设置</string>
 

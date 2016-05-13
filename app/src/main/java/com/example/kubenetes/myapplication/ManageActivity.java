@@ -27,26 +27,12 @@ public class ManageActivity extends BaseActivity implements RadioGroup.OnChecked
     @ViewInject(R.id.manage_order)
     private RadioButton manageOrder;
 
-    @ViewInject(R.id.manage_user)
-    private RadioButton manageUser;
-
-    @ViewInject(R.id.manage_three)
-    private RadioButton manageThree;
-
-    @ViewInject(R.id.manage_four)
-    private RadioButton manageFour;
+    @ViewInject(R.id.manage_todayOrder)
+    private RadioButton manageTodayOrder;
 
     private ActionBar actionBar;
 
     private MyFragmentPagerAdapter mAdapter;
-
-    public static final int PAGE_ORDER = 0;
-
-    public static final int PAGE_USER = 1;
-
-    public static final int PAGE_THREE = 2;
-
-    public static final int PAGE_FOUR = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,17 +68,11 @@ public class ManageActivity extends BaseActivity implements RadioGroup.OnChecked
         //state的状态有三个，0表示什么都没做，1正在滑动，2滑动完毕
         if (state == 2) {
             switch (managePager.getCurrentItem()) {
-                case PAGE_ORDER:
+                case 0:
                     manageOrder.setChecked(true);
                     break;
-                case PAGE_USER:
-                    manageUser.setChecked(true);
-                    break;
-                case PAGE_THREE:
-                    manageThree.setChecked(true);
-                    break;
-                case PAGE_FOUR:
-                    manageFour.setChecked(true);
+                case 1:
+                    manageTodayOrder.setChecked(true);
                     break;
             }
         }
@@ -102,16 +82,10 @@ public class ManageActivity extends BaseActivity implements RadioGroup.OnChecked
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         switch (checkedId) {
             case R.id.manage_order:
-                managePager.setCurrentItem(PAGE_ORDER);
+                managePager.setCurrentItem(0);
                 break;
-            case R.id.manage_user:
-                managePager.setCurrentItem(PAGE_USER);
-                break;
-            case R.id.manage_three:
-                managePager.setCurrentItem(PAGE_THREE);
-                break;
-            case R.id.manage_four:
-                managePager.setCurrentItem(PAGE_FOUR);
+            case R.id.manage_todayOrder:
+                managePager.setCurrentItem(1);
                 break;
         }
     }

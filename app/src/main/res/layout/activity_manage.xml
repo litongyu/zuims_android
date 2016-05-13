@@ -18,25 +18,13 @@
             android:id="@+id/manage_order"
             style="@style/tab_menu_item"
             android:drawableTop="@drawable/tab_menu_channel"
-            android:text="@string/tab_menu_alert" />
+            android:text="@string/tab_menu_order" />
 
         <RadioButton
-            android:id="@+id/manage_user"
-            style="@style/tab_menu_item"
-            android:drawableTop="@drawable/tab_menu_message"
-            android:text="@string/tab_menu_profile" />
-
-        <RadioButton
-            android:id="@+id/manage_three"
+            android:id="@+id/manage_todayOrder"
             style="@style/tab_menu_item"
             android:drawableTop="@drawable/tab_menu_better"
-            android:text="@string/tab_menu_pay" />
-
-        <RadioButton
-            android:id="@+id/manage_four"
-            style="@style/tab_menu_item"
-            android:drawableTop="@drawable/tab_menu_setting"
-            android:text="@string/tab_menu_setting" />
+            android:text="@string/tab_menu_todayOrder" />
 
     </RadioGroup>
 
