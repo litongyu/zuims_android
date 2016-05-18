@@ -19,11 +19,6 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
     public MyFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
-//        fragmentArrayList = new ArrayList<BaseFragment>();
-//        fragmentArrayList.add(new OrderFragment());
-//        fragmentArrayList.add(new UserFragment());
-//        fragmentArrayList.add(new ThreeFragment());
-//        fragmentArrayList.add(new FourFragment());
     }
 
     @Override
@@ -38,7 +33,7 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
             return new OrderFragment();
         }
         else {
-            return new UserFragment();
+            return new TodayOrderFragment();
         }
     }
 

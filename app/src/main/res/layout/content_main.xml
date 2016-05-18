@@ -12,19 +12,31 @@
     tools:context="com.example.kubenetes.myapplication.MainActivity"
     tools:showIn="@layout/activity_main"
     android:clickable="true">
-    <EditText
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:id="@+id/userName"
-        android:layout_alignParentTop="true"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/full_app_name"
+        android:text="@string/full_app_name"
+        android:textSize="24sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="99dp"
-        android:autoText="false"
-        android:hint="用户名"
-        android:clickable="false" />
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="60dp" />
 
     <EditText
-        android:layout_width="200dp"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:id="@+id/userName"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/full_app_name"
+        android:layout_marginTop="30dp"
+        android:autoText="false"
+        android:hint="用户名"
+        android:clickable="false"
+        android:background="@drawable/login_input_bg"/>
+
+    <EditText
+        android:layout_width="250dp"
         android:layout_height="50dp"
         android:inputType="textPassword"
         android:ems="10"
@@ -32,18 +44,22 @@
         android:layout_below="@+id/userName"
         android:layout_alignLeft="@+id/userName"
         android:layout_alignStart="@+id/userName"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="30dp"
         android:hint="密码"
-        android:password="true" />
+        android:password="true"
+        android:background="@drawable/login_input_bg"/>
 
     <Button
-        android:layout_width="200dp"
+        android:layout_width="250dp"
         android:layout_height="50dp"
         android:text="@string/login"
+        android:textSize="18sp"
         android:id="@+id/button_login"
         android:layout_below="@+id/password"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/shape_login" />
+
+
 
 </RelativeLayout>

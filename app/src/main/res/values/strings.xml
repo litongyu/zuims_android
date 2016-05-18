@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">最美食</string>
+    <string name="full_app_name">最美食商户订单管理应用</string>
     <string name="action_settings">设置</string>
+    <string name="action_logout">注销</string>
     <string name="login">登录</string>
 
     <string name="tab_menu_order">所有订单</string>
@@ -17,6 +19,8 @@
     <string name="dialog_order_orderTime">就餐时间: </string>
     <string name="dialog_order_orderSum">订单金额: </string>
     <string name="dialog_order_state">订单状态: </string>
+
+    <string name="no_today_order">今天无人就餐\n&#160;&#160;&#160;&#160;点击刷新</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -9,7 +9,9 @@
         android:id="@+id/linearLayout">
 
         <TableLayout android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
 
             <TableRow android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -20,8 +22,8 @@
                     android:layout_marginLeft="10dp"
                     android:textSize="18sp"
                     android:layout_gravity="center_vertical"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp" />
+                    android:paddingTop="2.5dp"
+                    android:paddingBottom="2.5dp" />
             </TableRow>
 
             <TableRow
@@ -32,8 +34,8 @@
                     android:id="@+id/order_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
+                    android:paddingTop="2.5dp"
+                    android:paddingBottom="2.5dp"
                     android:layout_marginLeft="10dp"
                     android:textSize="18sp"
                     android:layout_gravity="center_vertical" />

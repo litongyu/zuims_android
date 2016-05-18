@@ -1,7 +1,6 @@
 package com.example.kubenetes.myapplication;
 
 
-import android.app.ActionBar;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -86,8 +85,6 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
     private static ArrayList<String> keyWords = new ArrayList<>();
 
     private MaterialDialog mMaterialDialog;
-
-    private ActionBar actionBar;
 
     public OrderFragment() {
         // Required empty public constructor

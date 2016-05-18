@@ -1,8 +1,13 @@
 package com.example.kubenetes.myapplication;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -10,6 +15,8 @@ import android.widget.Toast;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
+
+import JavaBeans.CurrentRest;
 
 @ContentView(R.layout.activity_manage)
 public class ManageActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener,
@@ -51,6 +58,38 @@ public class ManageActivity extends BaseActivity implements RadioGroup.OnChecked
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setLogo(R.drawable.logo);
         actionBar.setSubtitle("李桐宇的餐厅");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_manage, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_logout) {
+            SharedPreferences settings = getSharedPreferences("account", Activity.MODE_PRIVATE);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.remove("username");
+            editor.remove("password");
+            editor.commit();
+            CurrentRest rest = CurrentRest.getInstance();
+            rest.setRestaurantId(null);
+            rest.setWhetherInfoComplete(null);
+            Intent intent = new Intent();
+            intent.setClass(ManageActivity.this, MainActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 
