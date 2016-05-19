@@ -26,6 +26,7 @@ import org.xutils.x;
 
 import JavaBeans.CurrentRest;
 import api.info.MyUrl;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 
 @ContentView(R.layout.activity_main)
 public class MainActivity extends BaseActivity {
@@ -44,6 +45,8 @@ public class MainActivity extends BaseActivity {
 
     @ViewInject(R.id.password)
     private EditText password;
+
+    private SweetAlertDialog pDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +89,11 @@ public class MainActivity extends BaseActivity {
 
     @Event(value = R.id.button_login, type = View.OnClickListener.class)
     private void login(View view) {
+        pDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(x.app().getResources().getColor(R.color.colorOrange));
+        pDialog.setTitleText("登录中");
+        pDialog.setCancelable(false);
+        pDialog.show();
         String url =   MyUrl.BaseUrl + MyUrl.merchantPort + "/restaurant/login";
         RequestParams params = new RequestParams(url);
         params.setHeader("Content-Type","application/json;charset=UTF-8");
@@ -93,43 +101,43 @@ public class MainActivity extends BaseActivity {
         params.addBodyParameter("password", password.getText().toString());
         params.setAsJsonContent(true);
         x.http().post(params, new Callback.CommonCallback<String>() {
-        @Override
-        public void onSuccess(String result) {
-            //保存当前restaurant以及用户名密码
-            Gson gson = new Gson();
-            CurrentRest.setOurInstance(gson.fromJson(result, CurrentRest.class));
-            SharedPreferences settings = getSharedPreferences("account", Activity.MODE_PRIVATE);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString("username", account.getText().toString());
-            editor.putString("password", password.getText().toString());
-            editor.commit();
-            PushService.subscribe(x.app(), CurrentRest.getInstance().getRestaurantId()+"", MainActivity.class);
-            AVInstallation.getCurrentInstallation().saveInBackground(new SaveCallback() {
-                @Override
-                public void done(AVException e) {
-                    AVInstallation.getCurrentInstallation().saveInBackground();
-                }
-            });
-            Intent intent = new Intent();
-            intent.setClass(MainActivity.this, ManageActivity.class);
-            startActivity(intent);
-            //Toast.makeText(x.app(), params.get("restaurantId")+"", Toast.LENGTH_LONG).show();
-        }
+            @Override
+            public void onSuccess(String result) {
+                //保存当前restaurant以及用户名密码
+                Gson gson = new Gson();
+                CurrentRest.setOurInstance(gson.fromJson(result, CurrentRest.class));
+                SharedPreferences settings = getSharedPreferences("account", Activity.MODE_PRIVATE);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("username", account.getText().toString());
+                editor.putString("password", password.getText().toString());
+                editor.commit();
+                PushService.subscribe(x.app(), CurrentRest.getInstance().getRestaurantId()+"", MainActivity.class);
+                AVInstallation.getCurrentInstallation().saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(AVException e) {
+                        AVInstallation.getCurrentInstallation().saveInBackground();
+                    }
+                });
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, ManageActivity.class);
+                startActivity(intent);
+                //Toast.makeText(x.app(), params.get("restaurantId")+"", Toast.LENGTH_LONG).show();
+            }
 
-        @Override
-        public void onError(Throwable ex, boolean isOnCallback) {
-            Toast.makeText(x.app(), "登录失败,请检查网络", Toast.LENGTH_LONG).show();
-        }
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                Toast.makeText(x.app(), "登录失败,请检查网络", Toast.LENGTH_SHORT).show();
+            }
 
-        @Override
-        public void onCancelled(CancelledException cex) {
-            Toast.makeText(x.app(), "cancelled", Toast.LENGTH_LONG).show();
-        }
+            @Override
+            public void onCancelled(CancelledException cex) {
+                Toast.makeText(x.app(), "cancelled", Toast.LENGTH_SHORT).show();
+            }
 
-        @Override
-        public void onFinished() {
-
-        }
-    });
-}
+            @Override
+            public void onFinished() {
+                pDialog.dismiss();
+            }
+        });
+    }
 }

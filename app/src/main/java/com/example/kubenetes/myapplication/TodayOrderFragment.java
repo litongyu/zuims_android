@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baoyz.widget.PullRefreshLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -32,6 +33,7 @@ import java.util.LinkedList;
 import JavaBeans.CurrentRest;
 import JavaBeans.Order;
 import api.info.MyUrl;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import info.hoang8f.widget.FButton;
 import me.drakeet.materialdialog.MaterialDialog;
 
@@ -40,7 +42,7 @@ import me.drakeet.materialdialog.MaterialDialog;
  * A simple {@link Fragment} subclass.
  */
 @ContentView(R.layout.fragment_today_order)
-public class TodayOrderFragment extends BaseFragment implements AdapterView.OnItemClickListener{
+public class TodayOrderFragment extends BaseFragment implements AdapterView.OnItemClickListener, PullRefreshLayout.OnRefreshListener{
 
     private LinkedList<Order> todayOrderList = null;
 
@@ -60,7 +62,12 @@ public class TodayOrderFragment extends BaseFragment implements AdapterView.OnIt
     @ViewInject(R.id.no_today_order)
     private TextView noTodayOrder;
 
+    @ViewInject(R.id.today_order_pull_refresh)
+    private PullRefreshLayout today_order_pull_refresh;
+
     private MaterialDialog mMaterialDialog;
+
+    private SweetAlertDialog pDialog;
 
     public TodayOrderFragment() {
         // Required empty public constructor
@@ -74,34 +81,18 @@ public class TodayOrderFragment extends BaseFragment implements AdapterView.OnIt
         return result.equals(dateStr);
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        todayOrderListView.setOnItemClickListener(this);
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser){
-            getTodayOrders();
-        }
-    }
-
-    @Event(value = R.id.no_today_order, type = View.OnClickListener.class)
-    private void refreshTodayOrder(View v){
-        Log.i("textview click", "i see");
-        getTodayOrders();
-    }
-
     private void getTodayOrders(){
-
         context = getActivity();
         if (todayOrderListAdapter == null) {
             todayOrderListAdapter = new TodayOrderListAdapter();
         }
         todayOrderListAdapter.setContext(context);
         rest = CurrentRest.getInstance();
+        pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(x.app().getResources().getColor(R.color.colorOrange));
+        pDialog.setTitleText("订单加载中");
+        pDialog.setCancelable(false);
+        pDialog.show();
         String url = MyUrl.BaseUrl + MyUrl.merchantPort
                 + "/order/infoByrestaurantid";
         RequestParams params = new RequestParams(url);
@@ -149,11 +140,52 @@ public class TodayOrderFragment extends BaseFragment implements AdapterView.OnIt
 
             @Override
             public void onFinished() {
+                today_order_pull_refresh.setRefreshing(false);
 
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(500);
+                            pDialog.dismiss();
+                        }
+                        catch(Exception e){
+
+                        }
+                    }
+                }).start();
             }
         });
 
     }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        todayOrderListView.setOnItemClickListener(this);
+        today_order_pull_refresh.setOnRefreshListener(this);
+        //today_order_pull_refresh.setOnRefreshListener(this);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            getTodayOrders();
+        }
+    }
+
+    @Event(value = R.id.no_today_order, type = View.OnClickListener.class)
+    private void refreshTodayOrder(View v){
+        Log.i("textview click", "i see");
+        getTodayOrders();
+    }
+
+    @Override
+    public void onRefresh(){
+        getTodayOrders();
+    }
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {

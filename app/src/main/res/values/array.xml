@@ -3,4 +3,11 @@
     <string-array name="contents">
         <item>kk</item>
     </string-array>
+
+    <array name="scheme_colors">
+        <item>@color/divider_color</item>
+        <item>@color/divider_color</item>
+        <item>@color/colorOrange</item>
+        <item>@color/colorOrange</item>
+    </array>
 </resources>

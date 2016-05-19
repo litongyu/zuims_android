@@ -12,11 +12,17 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import org.xutils.common.Callback;
+import org.xutils.http.RequestParams;
 import org.xutils.view.annotation.ContentView;
 import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 import JavaBeans.CurrentRest;
+import JavaBeans.RestInfo;
+import api.info.MyUrl;
 
 @ContentView(R.layout.activity_manage)
 public class ManageActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener,
@@ -57,7 +63,35 @@ public class ManageActivity extends BaseActivity implements RadioGroup.OnChecked
         actionBar.setDisplayUseLogoEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setLogo(R.drawable.logo);
-        actionBar.setSubtitle("李桐宇的餐厅");
+        actionBar.setSubtitle("获取餐厅名失败");
+        String infoUrl =   MyUrl.BaseUrl + MyUrl.merchantPort + "/restaurant/info";
+        RequestParams infoParams = new RequestParams(infoUrl);
+        infoParams.addQueryStringParameter("id", CurrentRest.getInstance().getRestaurantId()+"");
+        x.http().get(infoParams, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                //保存当前restaurant以及用户名密码
+                Gson gson = new Gson();
+                RestInfo.setOurInstance(gson.fromJson(result, RestInfo.class));
+                actionBar.setSubtitle(RestInfo.getInstance().getRestaurantName());
+                //Toast.makeText(x.app(), params.get("restaurantId")+"", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                Toast.makeText(x.app(), "获取餐厅信息失败,检查网络", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+                Toast.makeText(x.app(), "cancelled", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFinished() {
+
+            }
+        });
     }
 
     @Override

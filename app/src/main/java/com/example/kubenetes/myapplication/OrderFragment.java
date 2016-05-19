@@ -1,10 +1,12 @@
 package com.example.kubenetes.myapplication;
 
 
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,6 +16,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVOSCloud;
+import com.baoyz.widget.PullRefreshLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -43,6 +47,7 @@ import java.util.LinkedList;
 import JavaBeans.CurrentRest;
 import JavaBeans.Order;
 import api.info.MyUrl;
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import info.hoang8f.widget.FButton;
 import me.drakeet.materialdialog.MaterialDialog;
 
@@ -51,7 +56,7 @@ import me.drakeet.materialdialog.MaterialDialog;
  * A simple {@link Fragment} subclass.
  */
 @ContentView(R.layout.fragment_order)
-public class OrderFragment extends BaseFragment implements AdapterView.OnItemClickListener{
+public class OrderFragment extends BaseFragment implements AdapterView.OnItemClickListener, PullRefreshLayout.OnRefreshListener{
 
     private LinkedList<Order> orderList = null;
 
@@ -80,11 +85,16 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
     @ViewInject(R.id.order_search)
     private EditText orderSearch;
 
+    @ViewInject(R.id.order_pull_refresh)
+    private PullRefreshLayout order_pull_refresh;
+
     private SearchListener searchListener;
 
     private static ArrayList<String> keyWords = new ArrayList<>();
 
     private MaterialDialog mMaterialDialog;
+
+    private SweetAlertDialog pDialog;
 
     public OrderFragment() {
         // Required empty public constructor
@@ -104,6 +114,72 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
         searchListener = new SearchListener();
         orderListView.setOnItemClickListener(this);
         orderSearch.addTextChangedListener(this.searchListener);
+        order_pull_refresh.setOnRefreshListener(this);
+    }
+
+    private void getAllOrders(final boolean scroll){
+        if(orderSearch != null){
+            orderSearch.setText("");
+        }
+        rest = CurrentRest.getInstance();
+        pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+        pDialog.getProgressHelper().setBarColor(x.app().getResources().getColor(R.color.colorOrange));
+        pDialog.setTitleText("订单加载中");
+        pDialog.setCancelable(false);
+        pDialog.show();
+        String url = MyUrl.BaseUrl + MyUrl.merchantPort
+                + "/order/infoByrestaurantid";
+        RequestParams params = new RequestParams(url);
+        params.addQueryStringParameter("restaurantId", rest.getRestaurantId() + "");
+        x.http().get(params, new Callback.CommonCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Gson gson = new Gson();
+                Log.i("orders", result);
+                ArrayList<Order> orders = gson.fromJson(result,
+                        new TypeToken<ArrayList<Order>>() {
+                        }.getType());
+                Collections.reverse(orders);
+                orderList = new LinkedList<Order>(orders);
+                orderListAdapter.setAllOrder(orderList);
+                orderListAdapter.setOrderList(orderList);
+                orderListView.setAdapter(orderListAdapter);
+
+                //恢复滑动位置
+                if(scroll) {
+                    orderListView.setSelectionFromTop(scrollPosition, topOffset);
+                }
+
+                //Toast.makeText(x.app(), orderList.size()+"", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onError(Throwable ex, boolean isOnCallback) {
+                Toast.makeText(x.app(), "获取订单失败,请检查网络", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onCancelled(CancelledException cex) {
+                Toast.makeText(x.app(), "cancelled", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFinished() {
+                order_pull_refresh.setRefreshing(false);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(500);
+                            pDialog.dismiss();
+                        }
+                        catch(Exception e){
+
+                        }
+                    }
+                }).start();
+            }
+        });
     }
 
     @Override
@@ -124,47 +200,9 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
                 orderListAdapter = new OrderListAdapter();
             }
             orderListAdapter.setContext(context);
-            rest = CurrentRest.getInstance();
-            String url = MyUrl.BaseUrl + MyUrl.merchantPort
-                    + "/order/infoByrestaurantid";
-            RequestParams params = new RequestParams(url);
-            params.addQueryStringParameter("restaurantId", rest.getRestaurantId() + "");
-            x.http().get(params, new Callback.CommonCallback<String>() {
-                @Override
-                public void onSuccess(String result) {
-                    Gson gson = new Gson();
-                    Log.i("orders", result);
-                    ArrayList<Order> orders = gson.fromJson(result,
-                            new TypeToken<ArrayList<Order>>() {
-                            }.getType());
-                    Collections.reverse(orders);
-                    orderList = new LinkedList<Order>(orders);
-                    orderListAdapter.setAllOrder(orderList);
-                    orderListAdapter.setOrderList(orderList);
-                    orderListView.setAdapter(orderListAdapter);
-
-                    //恢复滑动位置
-                    orderListView.setSelectionFromTop(scrollPosition, topOffset);
-
-                    //Toast.makeText(x.app(), orderList.size()+"", Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void onError(Throwable ex, boolean isOnCallback) {
-                    Toast.makeText(x.app(), "获取订单失败,请检查网络", Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void onCancelled(CancelledException cex) {
-                    Toast.makeText(x.app(), "cancelled", Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void onFinished() {
-
-                }
-            });
-        } else {
+            getAllOrders(true);
+        }
+        else {
             // fragment is no longer visible
             visible = false;
             if(orderList != null){
@@ -176,9 +214,19 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
         }
     }
 
+
+    //下拉刷新监听
+    @Override
+    public void onRefresh(){
+        //下拉刷新不需要记住滑动位置
+        getAllOrders(false);
+
+    }
+
     //orderListAdapter的回调函数写在这里,但感觉写在orderListAdapter里面也行啊,是不是我代码写的丑,还是就该这么写呢?
     //需要注意,获取Apater的orderList需要调用orderListAdapter.getOrderList(),因为是深复制
 
+    //订单列表点击事件
     @Override
     public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
         mMaterialDialog = new MaterialDialog(getActivity());
@@ -347,6 +395,7 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
         //mMaterialDialog.setMessage("你好，世界~");
     }//end item onclick
 
+    //搜索框监听
     private class SearchListener implements TextWatcher{
         @Override
         public void afterTextChanged(Editable arg0) {
@@ -421,11 +470,29 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
         }
     }
 
+    //是否运行在前台
+    private static boolean isRunningForeground (Context context) {
+        ActivityManager am = (ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+        ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
+        String currentPackageName = cn.getPackageName();
+        if(!TextUtils.isEmpty(currentPackageName) && currentPackageName.equals(x.app().getPackageName())) {
+            return true ;
+        }
+
+        return false ;
+    }
     //消息推送
     public static class CustomReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            boolean runInFrontEnd = false;
+            if(context != null) {
+                ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+                ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
+                String currentPackageName = cn.getPackageName();
+                runInFrontEnd = !TextUtils.isEmpty(currentPackageName) && currentPackageName.equals(x.app().getPackageName());
+            }
             if (intent.getAction().equals("orders")) {
                 try {
                     JSONObject json = new JSONObject(intent.getExtras().getString("com.avos.avoscloud.Data"));
@@ -434,7 +501,7 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
                     Order newOrder = gson.fromJson(orderStr, Order.class);
                     String message = "[新订单]" + "订单号:" + newOrder.getOrderId();
                     Log.i("avpush", "receive oreder: " + orderStr);
-                    if(!visible){
+                    if(!visible || (visible && !runInFrontEnd)){
                         notifyCount++;
                         if(notifyCount > 1){
                             message = "[新订单]" + notifyCount + "个新订单";
@@ -463,7 +530,7 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
                                                 Context.NOTIFICATION_SERVICE);
                         mNotifyMgr.notify(mNotificationId, mBuilder.build());
                     }
-                    else if(orderListAdapter != null){
+                    if(orderListAdapter != null && visible){
                         orderListAdapter.getAllOrder().add(0, newOrder);
                         orderListAdapter.filter(keyWords);
                     }
