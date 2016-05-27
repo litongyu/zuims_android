@@ -97,7 +97,7 @@ public class TodayOrderListAdapter extends BaseAdapter{
             holder.handle_button.setEnabled(false);
         }
         else if(temp.getState().equals("已订座")){
-            holder.handle_button.setText("完成订单");
+            holder.handle_button.setText("确认就餐");
             holder.handle_button.setButtonColor(x.app().getResources().getColor(R.color.finish_order));
             holder.handle_button.setOnClickListener(new View.OnClickListener() {
                 @Override

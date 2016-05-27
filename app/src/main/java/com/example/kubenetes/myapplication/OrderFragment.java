@@ -496,6 +496,7 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
             if (intent.getAction().equals("orders")) {
                 try {
                     JSONObject json = new JSONObject(intent.getExtras().getString("com.avos.avoscloud.Data"));
+                    Log.i("receive order", json+"");
                     String orderStr = json.getString("order");
                     Gson gson = new Gson();
                     Order newOrder = gson.fromJson(orderStr, Order.class);
