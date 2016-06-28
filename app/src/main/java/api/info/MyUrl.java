@@ -19,7 +19,7 @@ public class MyUrl {
 //    public static final String managePort = "8008";
 //
 //    public static final String restaurantPort = "8004";
-
+//
 //    public static final String socketId = "6HR0iwp5ALyvLRHtq70BhYy8-gzGzoHsz";
 //
 //    public static final String socketKey = "HmiHqJ9dJ3O26BP5V175HdG8";

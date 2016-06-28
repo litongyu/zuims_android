@@ -66,7 +66,7 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
 
     private static Integer notifyCount = 0;
 
-    private static Integer mNotificationId = 10087;
+    private static Integer mNotificationId = 1008777;
 
 
     private int scrollPosition = 0;
@@ -110,11 +110,25 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        Log.i("fragmentTest", "onCreate");
         super.onViewCreated(view, savedInstanceState);
         searchListener = new SearchListener();
         orderListView.setOnItemClickListener(this);
         orderSearch.addTextChangedListener(this.searchListener);
         order_pull_refresh.setOnRefreshListener(this);
+        orderSearch.clearFocus();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i("fragment on start", "yes");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i("fragment on resume", "yes");
     }
 
     private void getAllOrders(final boolean scroll){
@@ -185,13 +199,13 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        Log.i("fragment visible", isVisibleToUser + "");
+        visible = isVisibleToUser;
         if(orderSearch != null){
             orderSearch.setText("");
         }
         keyWords.clear();
         if (isVisibleToUser) {
-            visible = true;
+            Log.i("fragmentTest", "visible");
             notifyCount = 0;
             NotificationManager mNotifyMgr = (NotificationManager)x.app().getSystemService(Context.NOTIFICATION_SERVICE);
             mNotifyMgr.cancel(mNotificationId);
@@ -204,7 +218,6 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
         }
         else {
             // fragment is no longer visible
-            visible = false;
             if(orderList != null){
                 //记住滑动位置
                 scrollPosition = orderListView.getFirstVisiblePosition();
@@ -486,54 +499,63 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            boolean runInFrontEnd = false;
-            if(context != null) {
-                ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-                ComponentName cn = am.getRunningTasks(1).get(0).topActivity;
-                String currentPackageName = cn.getPackageName();
-                runInFrontEnd = !TextUtils.isEmpty(currentPackageName) && currentPackageName.equals(x.app().getPackageName());
-            }
             if (intent.getAction().equals("orders")) {
                 try {
                     JSONObject json = new JSONObject(intent.getExtras().getString("com.avos.avoscloud.Data"));
                     Log.i("receive order", json+"");
                     String orderStr = json.getString("order");
+                    String type = json.getString("operation");
                     Gson gson = new Gson();
                     Order newOrder = gson.fromJson(orderStr, Order.class);
-                    String message = "[新订单]" + "订单号:" + newOrder.getOrderId();
-                    Log.i("avpush", "receive oreder: " + orderStr);
-                    if(!visible || (visible && !runInFrontEnd)){
-                        notifyCount++;
-                        if(notifyCount > 1){
-                            message = "[新订单]" + notifyCount + "个新订单";
+                    if(type.equals("待确认")) {
+                        String message = "[新订单]" + "订单号:" + newOrder.getOrderId();
+                        //if (!visible || (visible && !runInFrontEnd)) {
+                            notifyCount++;
+                            if (notifyCount > 1) {
+                                message = "[新订单]" + notifyCount + "个新订单";
+                            }
+                            Intent resultIntent = new Intent(AVOSCloud.applicationContext, MainActivity.class);
+                            PendingIntent pendingIntent =
+                                    PendingIntent.getActivity(AVOSCloud.applicationContext, 0, resultIntent,
+                                            PendingIntent.FLAG_CANCEL_CURRENT);
+                            Bitmap LargeBitmap = BitmapFactory.decodeResource(AVOSCloud.applicationContext.getResources(), R.drawable.notification);
+                            NotificationCompat.Builder mBuilder =
+                                    new NotificationCompat.Builder(AVOSCloud.applicationContext)
+                                            .setLargeIcon(LargeBitmap)
+                                            .setSmallIcon(R.drawable.notification)
+                                            .setContentTitle(AVOSCloud.applicationContext.getResources().getString(R.string.app_name))
+                                            .setContentText(message)
+                                            .setTicker(message)
+                                            .setWhen(System.currentTimeMillis())
+                                            .setAutoCancel(true)
+                                            .setContentIntent(pendingIntent)
+                                            .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE);
+
+
+                            NotificationManager mNotifyMgr =
+                                    (NotificationManager) AVOSCloud.applicationContext
+                                            .getSystemService(
+                                                    Context.NOTIFICATION_SERVICE);
+                            mNotifyMgr.notify(mNotificationId, mBuilder.build());
+                        //}
+                        if (orderListAdapter != null) {
+                            Log.i("avpush", "there");
+                            orderListAdapter.getAllOrder().add(0, newOrder);
+                            orderListAdapter.filter(keyWords);
+                            orderListAdapter.notifyDataSetChanged();
                         }
-                        Intent resultIntent = new Intent(AVOSCloud.applicationContext, MainActivity.class);
-                        PendingIntent pendingIntent =
-                                PendingIntent.getActivity(AVOSCloud.applicationContext, 0, resultIntent,
-                                        PendingIntent.FLAG_CANCEL_CURRENT);
-                        Bitmap LargeBitmap = BitmapFactory.decodeResource(AVOSCloud.applicationContext.getResources(), R.drawable.notification);
-                        NotificationCompat.Builder mBuilder =
-                                new NotificationCompat.Builder(AVOSCloud.applicationContext)
-                                        .setLargeIcon(LargeBitmap)
-                                        .setSmallIcon(R.drawable.notification)
-                                        .setContentTitle(AVOSCloud.applicationContext.getResources().getString(R.string.app_name))
-                                        .setContentText(message)
-                                        .setTicker(message)
-                                        .setWhen(System.currentTimeMillis())
-                                        .setAutoCancel(true)
-                                        .setContentIntent(pendingIntent)
-                                        .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE);
-
-
-                        NotificationManager mNotifyMgr =
-                                (NotificationManager) AVOSCloud.applicationContext
-                                        .getSystemService(
-                                                Context.NOTIFICATION_SERVICE);
-                        mNotifyMgr.notify(mNotificationId, mBuilder.build());
                     }
-                    if(orderListAdapter != null && visible){
-                        orderListAdapter.getAllOrder().add(0, newOrder);
-                        orderListAdapter.filter(keyWords);
+                    else{
+                        if (orderListAdapter != null && visible) {
+                            for(int i = 0; i < orderListAdapter.getAllOrder().size(); i++){
+                                if(orderListAdapter.getAllOrder().get(i).getOrderId().equals(newOrder.getOrderId())){
+                                    orderListAdapter.getAllOrder().get(i).setState(newOrder.getState());
+                                    break;
+                                }
+                            }
+                            orderListAdapter.filter(keyWords);
+                            orderListAdapter.notifyDataSetChanged();
+                        }
                     }
                 }
                 catch (Exception e){

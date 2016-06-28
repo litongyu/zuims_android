@@ -92,7 +92,7 @@ public class TodayOrderListAdapter extends BaseAdapter{
         holder.order_info.setText(temp.getOrderTime() + "  " +
                 temp.getDinerNum() + " 人");
         if(temp.getState().equals("已就餐")){
-            holder.handle_button.setText("已就餐");
+            holder.handle_button.setText("\b\b已就餐\b\b");
             holder.handle_button.setButtonColor(x.app().getResources().getColor(R.color.eat_order));
             holder.handle_button.setEnabled(false);
         }
