@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.text.Editable;
@@ -68,6 +69,7 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
 
     private static Integer mNotificationId = 1008777;
 
+    private static TextToSpeech tts;
 
     private int scrollPosition = 0;
 
@@ -117,6 +119,24 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
         orderSearch.addTextChangedListener(this.searchListener);
         order_pull_refresh.setOnRefreshListener(this);
         orderSearch.clearFocus();
+        
+        tts = new TextToSpeech(this.getActivity(), new TextToSpeech.OnInitListener() {
+
+            @Override
+            public void onInit(int status) {
+                // TODO Auto-generated method stub
+                if (status == TextToSpeech.SUCCESS) {
+                    int result = tts.setLanguage(Locale.CHINESE);
+                    if (result == TextToSpeech.LANG_MISSING_DATA
+                            || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        Log.e("lanageTag", "not use");
+                    } else {
+                        tts.speak("最美食欢迎您", TextToSpeech.QUEUE_FLUSH,
+                                null);
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -503,6 +523,10 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
                 try {
                     JSONObject json = new JSONObject(intent.getExtras().getString("com.avos.avoscloud.Data"));
                     Log.i("receive order", json+"");
+                    
+                    tts.speak("您有新的订单，请及时处理" , TextToSpeech.QUEUE_FLUSH,
+                            null);
+                    
                     String orderStr = json.getString("order");
                     String type = json.getString("operation");
                     Gson gson = new Gson();
