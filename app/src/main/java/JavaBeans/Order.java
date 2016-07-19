@@ -25,7 +25,7 @@ public class Order {
 
     private String  handleType;
 
-    private Integer dorderSum;
+    private Double dorderSum;
 
     private String  restaurantName;
 
@@ -38,6 +38,12 @@ public class Order {
     private Integer gender;
 
     private String  userVipLevel;
+    
+    private String hotelName;
+    
+    private String productId;
+    
+    private String productName;
 
     public Order(){
 
@@ -115,11 +121,11 @@ public class Order {
         this.handleType = handleType;
     }
 
-    public Integer getDorderSum() {
+    public Double getDorderSum() {
         return dorderSum;
     }
 
-    public void setDorderSum(Integer dorderSum) {
+    public void setDorderSum(Double dorderSum) {
         this.dorderSum = dorderSum;
     }
 
@@ -170,6 +176,18 @@ public class Order {
     public void setUserVipLevel(String userVipLevel) {
         this.userVipLevel = userVipLevel;
     }
+    
+    public String getHotelName() { return hotelName; }
+    
+    public void setHotelName(String hotelName) { this.hotelName = hotelName; }
+    
+    public String getProductId() { return productId; }
+    
+    public void setProductId(String productId) { this.productId = productId; }
+    
+    public String getProductName() { return productName;}
+    
+    public void setProductName(String productName) { this.productName = productName; }
 
     public String getSearchString(){
         return "" + orderId + phoneId + orderTime + state + createTime + dinerNum
