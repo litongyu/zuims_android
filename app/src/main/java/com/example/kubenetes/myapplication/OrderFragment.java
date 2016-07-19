@@ -132,8 +132,7 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
                             || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                         Log.e("lanageTag", "not use");
                     } else {
-                        tts.speak("最美食欢迎您", TextToSpeech.QUEUE_FLUSH,
-                                null);
+                        tts.speak("最美食欢迎您", TextToSpeech.QUEUE_FLUSH, null);
                     }
                 }
             }
@@ -525,9 +524,6 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
                     JSONObject json = new JSONObject(intent.getExtras().getString("com.avos.avoscloud.Data"));
                     Log.i("receive order", json+"");
                     
-                    tts.speak("您有新的订单，请及时处理" , TextToSpeech.QUEUE_FLUSH,
-                            null);
-                    
                     String orderStr = json.getString("order");
                     String type = json.getString("operation");
                     Gson gson = new Gson();
@@ -535,6 +531,7 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
                     if(type.equals("待确认")) {
                         String message = "[新订单]" + "订单号:" + newOrder.getOrderId();
                         //if (!visible || (visible && !runInFrontEnd)) {
+                            tts.speak("您有新的订单，请及时处理" , TextToSpeech.QUEUE_FLUSH, null);
                             notifyCount++;
                             if (notifyCount > 1) {
                                 message = "[新订单]" + notifyCount + "个新订单";
