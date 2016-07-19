@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">最美食</string>
+    <string name="app_name">最美食商户后台</string>
     <string name="full_app_name">最美食商户订单管理应用</string>
     <string name="action_settings">设置</string>
     <string name="action_logout">注销</string>
