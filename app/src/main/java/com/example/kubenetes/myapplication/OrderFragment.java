@@ -354,9 +354,9 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
         } //end if 待确认
 
         if (temp.getState().equals("已订座")) {
-            holder.dialog_order_finish.setVisibility(View.VISIBLE);
-            holder.dialog_vacant_2.setVisibility(View.VISIBLE);
-            holder.dialog_order_finish.setOnClickListener(new View.OnClickListener() {
+            //holder.dialog_order_finish.setVisibility(View.VISIBLE);
+            //holder.dialog_vacant_2.setVisibility(View.VISIBLE);
+            /*holder.dialog_order_finish.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     String url = MyUrl.BaseUrl + MyUrl.merchantPort + "/order/finishOrder";
@@ -389,7 +389,7 @@ public class OrderFragment extends BaseFragment implements AdapterView.OnItemCli
                         }
                     });
                 }
-            });
+            });*/
         } //end-if 已订座
 
         holder.dialog_return.setOnClickListener(new View.OnClickListener() {
