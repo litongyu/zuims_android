@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="90dp"
     android:descendantFocusability="blocksDescendants"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fbutton="http://schemas.android.com/apk/res-auto">
-    <LinearLayout android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <RelativeLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:id="@+id/linearLayout">
 
         <TableLayout android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp">
+            android:paddingTop="1dp"
+            android:paddingBottom="1dp">
 
             <TableRow android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
@@ -22,8 +22,8 @@
                     android:layout_marginLeft="10dp"
                     android:textSize="18sp"
                     android:layout_gravity="center_vertical"
-                    android:paddingTop="2.5dp"
-                    android:paddingBottom="2.5dp" />
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp" />
             </TableRow>
 
             <TableRow
@@ -34,10 +34,27 @@
                     android:id="@+id/order_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="2.5dp"
-                    android:paddingBottom="2.5dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
                     android:layout_marginLeft="10dp"
                     android:textSize="18sp"
+                    android:layout_gravity="center_vertical" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+                <TextView
+                    android:id="@+id/order_cooper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="18sp"
+                    android:text="滴滴"
                     android:layout_gravity="center_vertical" />
             </TableRow>
         </TableLayout>
@@ -47,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"></LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <info.hoang8f.widget.FButton
         android:id="@+id/handle_button"
